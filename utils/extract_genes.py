@@ -11,7 +11,7 @@ from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq,translate
 from BCBio import GFF
-from rjvbio.seq import parse_gff
+from rjvbio.seq import gffdata
 
 ap = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 ap.add_argument('--inpfasta',required=True,type=str,help='input FASTA file')
@@ -23,7 +23,8 @@ conf = ap.parse_args() #sys.argv
 #read in vesca pseudomolecules as a dictionary name:seqrecord
 seq_dict = SeqIO.to_dict(SeqIO.parse(conf.inpfasta,"fasta"))
 
-data = parse_gff(conf.inpgff)
+#parse gff file, requiring that genes and mRNAs have unique ids
+data = gffdata(conf.inpgff,unique=['gene','mRNA'])
 
 #open output file
 if conf.out == 'STDOUT':
@@ -36,6 +37,7 @@ if conf.protein:
 else:
     required_type = 'exon'
 
+#go through in file order
 for rec in data.items:
     #only use mRNA items
     if rec.type != 'mRNA': continue
@@ -43,9 +45,9 @@ for rec in data.items:
     
     #get a list of its exons or CDSs
     for kid in data.kids[rec.id]:
-        sub = data.ids[kid]
-        assert sub.strand == rec.strand
-        if sub.type == required_type: part_list.append(sub)
+        for sub in data.ids[kid]:
+            assert sub.strand == rec.strand
+            if sub.type == required_type: part_list.append(sub)
 
     #sort into order by start bp
     part_list.sort(key=lambda sub:sub.start)
