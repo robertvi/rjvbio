@@ -41,12 +41,15 @@ else:
 for rec in data.items:
     #only use mRNA items
     if rec.type != 'mRNA': continue
-    part_list = []
     
+    #ignore if it has not child items
+    if not rec.id in data.kids: continue
+
     #get a list of its exons or CDSs
+    part_list = []
     for kid in data.kids[rec.id]:
         for sub in data.ids[kid]:
-            assert sub.strand == rec.strand
+            #assert sub.strand == rec.strand
             if sub.type == required_type: part_list.append(sub)
 
     #sort into order by start bp
@@ -57,9 +60,15 @@ for rec in data.items:
     for sub in part_list:
         seq += str(seq_dict[rec.seqid].seq[sub.start:sub.end])
         
+    #ignore if length zero
+    if len(seq) == 0: continue
+    if seq.upper().count('N') == len(seq): continue
+        
     seq = Seq(seq)
     if rec.strand == '-': seq = seq.reverse_complement()
-    if conf.protein: seq = translate(seq)
+    if conf.protein:
+        seq = translate(seq)
+        if len(seq) == 0: continue
     newrec = SeqRecord(seq, id=rec.id,description='')
 
     #write out to file
