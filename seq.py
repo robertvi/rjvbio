@@ -7,6 +7,61 @@ and removed from
 
 from Bio.Seq import reverse_complement, translate, Seq
 from Bio.Alphabet import IUPAC
+import sys
+
+def read_fastq(f):
+    '''
+    read next fastq record
+    file must be at start of record or end of file
+    returns record or None
+    '''
+    
+    header = f.readline()
+    if header == '': return None #eof
+    assert header[0] == '@'
+    header = header[1:].strip()
+    
+    seq = f.readline()
+    assert seq != ''
+    seq = seq.strip()
+    
+    redundant = f.readline()
+    assert redundant[0] == '+'
+    
+    qual = f.readline()
+    assert qual != ''
+    qual = qual.strip()
+
+    rec = {}
+    rec['header'] = header
+    rec['seq'] = seq
+    rec['qual'] = qual
+    return rec
+
+def generate_fastq(fname):
+    '''
+    generator to yield next fastq sequence
+    '''
+    
+    if fname == sys.stdin:
+        f = sys.stdin
+    elif fname.endswith('.gz'):
+        #from subprocess import Popen, PIPE
+        #f = Popen(['zcat', fname], stdout=PIPE).stdout #not significantly faster
+        f = gzip.open(fname,'rb')
+    else:
+        f = open(fname,'rb')
+    
+    while True:
+        rec = read_fastq(f)
+
+        #end of file
+        if rec == None: break
+        
+        yield rec
+
+    f.close()
+
 
 class exoneratehit:
     def __init__(self,line,uid):
