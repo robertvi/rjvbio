@@ -27,3 +27,4 @@ assign_args()
     TEST_ECHO=$(echo ${CMD_LINE_OPTIONS} | sed 's/|--/ \$/g' | tr '|' ' ')
     eval echo $TEST_ECHO > /dev/null
 }
+

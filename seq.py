@@ -7,8 +7,69 @@ and removed from
 
 from Bio.Seq import reverse_complement, translate, Seq
 from Bio.Alphabet import IUPAC
-import sys
+import sys,os
 
+class fastaseq:
+    'one line from samtools .fai index file'
+    def __init__(self,line,i):
+        tok = line.strip().split('\t') + [i]
+        self.uid = tok[0]
+        self.len = int(tok[1]) #length of the sequence in bases
+        self.seekposn = int(tok[2]) #start of sequence data
+        self.basesperline = int(tok[3]) #bases of sequence data per line
+        self.bytesperline = int(tok[4]) #length of sequence lines incl end of line
+        self.recordoffset = i
+
+class fasta:
+    'read from a samtools fasta .fai index file'
+    def __init__(self,fname):
+        self.fname = fname
+        self.ifname = fname + '.fai'
+        self.rec_dict = {}
+        self.rec_list = []
+        
+        assert os.path.isfile(self.fname)
+        assert os.path.isfile(self.ifname)
+        assert os.stat(self.fname).st_mtime <= os.stat(self.ifname).st_mtime
+        
+        f = open(self.ifname)
+        for i,line in enumerate(f):
+            rec = fastaseq(line,i)
+            self.rec_list.append(rec) #index in file order
+            self.rec_dict[rec.uid] = rec #index by sequence id
+        f.close()
+        
+        self.f = open(self.fname)
+    
+    def __len__(self):
+        #how many sequences are in the fasta file
+        return len(self.rec_list)
+        
+    def __getitem__(self,key):
+        #lookup the index record for a given sequence
+        #by seqid or offset
+        if type(key) == int:
+            return self.rec_list[key]
+        else:
+            return self.rec_dict[key]
+
+    def iterseq(self,key):
+        #return an iterator to the sequence of a given record
+        #return one line at a time
+        if type(key) == int:
+            rec = self.rec_list[key]
+        else:
+            rec = self.rec_dict[key]
+            
+        self.f.seek(rec.seekposn)
+        while True:
+            line = self.f.readline()
+            if line.startswith('>') or line == '': break
+            yield line.strip()
+            
+    def close(self):
+        self.f.close()
+        
 def read_fastq(f):
     '''
     read next fastq record
@@ -92,7 +153,7 @@ class exoneratehit:
         
         tok = line.strip().split('\t')[:8]
         if tok[2] == 'gene':
-            tok.append('ID=%s_%d'%(self.qid,self.uid))
+            tok.append('ID=%s_%d;Name=%s(%d)'%(self.qid,self.uid,self.qid,self.score))
             self.lines.append(tok)
             tok = tok[:]
             tok[2] = 'mRNA'

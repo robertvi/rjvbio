@@ -4,7 +4,7 @@
 convert exonerate hits from a protein versus genome search
 into GFF annotations defining the location of the CDS / exon in the genome
 
-exonerate should be run including sugar and targetgff in the output something like this:
+exonerate should first be run including sugar and targetgff in the output something like this:
 
 exonerate --showsugar --showtargetgff --model protein2genome PROTEINS.fa GENOME.fa > OUTPUT_FILE
 
