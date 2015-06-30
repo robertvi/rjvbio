@@ -17,6 +17,7 @@ echo -n 'fastq' > ${outcsv}
 for x in $(ls -1 ${adapters}) ; do echo -n ,$(basename ${x}) >> ${outcsv} ; done
 echo >> ${outcsv}
 
+mkdir -p ${tmpdir}
 for x in $(ls -1 ${fastqs})
 do
     #print name of fastq
