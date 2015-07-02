@@ -13,5 +13,5 @@
 
 set -eu
 
-qsub -terse -cwd -V -N "$(basename $1)[$(readlink -f $1 | tr '/' '_')]" $1
+qsub -terse -cwd -e ./logs -o ./logs -V -N "$(basename $1)_$(dirname $(readlink -f $1) | tr '/' '_')" $1
 

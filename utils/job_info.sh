@@ -24,7 +24,7 @@ cat > ${tmpfile} <<XXX
 XXX
 
 echo -n 'select hostname,job_name,job_number,task_number,maxvmem,exit_status,failed,category' >> ${tmpfile}
-echo " from data where owner == '${owner}' order by end_time desc limit ${limit};" >> ${tmpfile}
+echo " from data where owner == '${owner}' order by fposn desc limit ${limit};" >> ${tmpfile}
 
 cat ${tmpfile} | sqlite3 ${db}
 
