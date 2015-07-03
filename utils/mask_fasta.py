@@ -2,6 +2,7 @@
 
 '''
 mask a fasta file at the regions indicted by a GFF file
+see also bedtools maskfasta
 '''
 
 import sys,argparse

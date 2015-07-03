@@ -44,4 +44,5 @@ cax = ax.imshow(cts, interpolation='nearest')
 
 #cbar = fig.colorbar(cax, ticks=[minct,maxct])
 
+plt.tight_layout()
 plt.show()

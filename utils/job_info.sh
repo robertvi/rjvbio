@@ -20,10 +20,10 @@ tmpfile=~/tmp/${RANDOM}_${RANDOM}.tmp
 cat > ${tmpfile} <<XXX
 .headers on
 .mode column
-.width 11 26 8 4 12 4 3 80
+.width 11 40 8 4 12 4 3 80
 XXX
 
-echo -n 'select hostname,job_name,job_number,task_number,maxvmem,exit_status,failed,category' >> ${tmpfile}
+echo -n 'select hostname,job_name,job_number,task_number,maxvmem,exit_status,failed' >> ${tmpfile}
 echo " from data where owner == '${owner}' order by fposn desc limit ${limit};" >> ${tmpfile}
 
 cat ${tmpfile} | sqlite3 ${db}
