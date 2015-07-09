@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 '''
-Read a FASTA and a GFF file, output the sequence of all mRNAs to a FASTA file
+Read a FASTA and a gffutils database file, output the sequence of all mRNAs to a FASTA file
 output as protein or transcript
 this version uses gffutils so that it can handle gtf as well as gff3
 '''

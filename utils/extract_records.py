@@ -22,11 +22,13 @@ if conf.seqid == None and conf.seqidfile == None:
     print 'no seqids specified'
     exit()
 
+#compile the set of seqids from command line
 id_dict = {}
 if conf.seqid:
     for seqid in conf.seqid:
         id_dict[seqid] = True
     
+#compile the set of seqids from seqid files
 if conf.seqidfile:
     for fname in conf.seqidfile:
         f = open(fname)
