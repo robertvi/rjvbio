@@ -20,7 +20,7 @@ tmpfile=~/tmp/${RANDOM}_${RANDOM}.tmp
 cat > ${tmpfile} <<XXX
 .headers on
 .mode column
-.width 11 40 8 4 12 4 3 80
+.width 11 40 8 4 16 4 3
 XXX
 
 echo -n 'select hostname,job_name,job_number,task_number,maxvmem,exit_status,failed' >> ${tmpfile}

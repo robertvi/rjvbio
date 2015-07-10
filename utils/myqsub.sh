@@ -18,5 +18,5 @@ set -o pipefail
 #make sure a logs directory exists
 mkdir -p logs
 
-qsub -V -terse -cwd -e ./logs -o ./logs -N "$(basename $1)_$(dirname $(readlink -f $1) | tr '/' '_')" $1
+qsub -V -terse -cwd -e ./logs -o ./logs -N "$(basename $1)_$(dirname $(readlink -f $1) | tr '/' '_')" $@
 
