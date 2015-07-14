@@ -10,7 +10,7 @@ import sys,argparse
 
 ap = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 ap.add_argument('--inp',required=True,type=str,help='input gff file')
-ap.add_argument('--merge',default="create_unique",type=str,help='merge strategy for features with the same ID')
+ap.add_argument('--merge',default="create_unique",type=str,help='merge strategy for features with the same ID (merge,create_unique,error,warning)')
 ap.add_argument('--db',required=True,type=str,help='output db file')
 conf = ap.parse_args() #sys.argv
 

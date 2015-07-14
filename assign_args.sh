@@ -8,7 +8,7 @@
 assign_args()
 {
     set -ue
-    set -o pipefail
+    #set -o pipefail
     
     CMD_LINE_OPTIONS=$1
     shift
@@ -26,5 +26,6 @@ assign_args()
     
     TEST_ECHO=$(echo ${CMD_LINE_OPTIONS} | sed 's/|--/ \$/g' | tr '|' ' ')
     eval echo $TEST_ECHO > /dev/null
+    #set -o pipefail off
 }
 

@@ -9,13 +9,14 @@
 set -eu
 set -o pipefail
 
-source ~/git_repos/rjvbio/assign_args.sh
+source /home/vicker/git_repos/rjvbio/assign_args.sh
 ARGS='|--db|--jobid|--taskid|'
 taskid=0
-db=~/gridengine/gridengine.db
+db=/home/vicker/gridengine/gridengine.db
 assign_args ${ARGS} "$@"
 
 tmpfile=~/tmp/${RANDOM}_${RANDOM}.tmp
+mkdir -p ~/tmp
 
 cat > ${tmpfile} <<XXX
 .headers on
