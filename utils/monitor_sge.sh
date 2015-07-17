@@ -9,9 +9,9 @@ echo =====QHOST
 qhost
 echo
 
-echo =====QSTAT -f
-qstat -f -u "*"
-echo
+#echo =====QSTAT -f
+#qstat -f -u "*"
+#echo
 
 echo =====QSTAT
 qstat -u "*"

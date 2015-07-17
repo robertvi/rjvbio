@@ -10,7 +10,7 @@ import argparse,sys
 ap = argparse.ArgumentParser(description=__doc__,formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 ap.add_argument('--inp',default='STDIN',type=str,help='blast tabular file created with --outfmt 6 from blast+')
 ap.add_argument('--query',action='store_true',help='if set, output annotation against the query sequences, otherwise against the subject')
-ap.add_argument('--scorecol',default=10,type=int,help='which column offset to use as the score column')
+ap.add_argument('--scorecol',default=11,type=int,help='which column offset to use as the score column (default: bitscore)')
 ap.add_argument('--out',default='STDOUT',type=str,help='output bed file')
 conf = ap.parse_args()
 
