@@ -77,8 +77,8 @@ for line in qhost:
         
         users[user] = True
 
-    cols[(host,user,'cpu')] += icpu
-    cols[(host,user,'mem')] += imem
+        cols[(host,user,'cpu')] += icpu
+        cols[(host,user,'mem')] += imem
 
     mem_list.append(total_mem)
     cpu_list.append(total_cpu)
