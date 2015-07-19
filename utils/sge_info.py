@@ -13,7 +13,8 @@ mem_list=[]
 users= {}
 
 #users to ignore
-ignore = ['Debian-e','root','sgeadmin','statd','messageb','apt-cach','ntp','mysql','dnsmasq','www-data','avahi']
+ignore = ['Debian-e','root','sgeadmin','statd','messageb','sshd',
+          'apt-cach','ntp','mysql','dnsmasq','www-data','avahi']
 #ignore=[]
 
 #capture output of qhost
