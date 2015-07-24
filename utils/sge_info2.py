@@ -2,9 +2,12 @@
 
 #
 # overview of cluster resource utilisation
-#
+# relies on batch_top script to update info
+# should be more efficient than running ssh 'top' for each update!
 
-import subprocess,collections
+import subprocess,collections,os,time,calendar
+
+batch_top_dir='/home/vicker/gridengine'
 
 cols = collections.defaultdict(float)
 hosts= []
@@ -17,38 +20,12 @@ ignore = ['Debian-e','root','sgeadmin','statd','messageb','sshd',
           'apt-cach','ntp','mysql','dnsmasq','www-data','avahi']
 #ignore=[]
 
+#create fake entry for head node, giving name, ncpus, mem (not used yet)
+qhost = ['blacklace00.blacklace - 16 - 15.7G']
+
 #capture output of qhost
 out = subprocess.check_output('qhost',shell=True)
-qhost = [tok for tok in out.strip().split('\n')[3:]]
-
-#capture head node top 
-out = subprocess.check_output("top -b -n 1",shell=True)
-top = [x for x in out.strip().split('\n')[7:]]
-
-total_mem = 0.0
-total_cpu = 0.0
-cpu = 16
-host = 'head'
-hosts.append(host)
-
-for item in top:
-    row  = item.split()
-    user = row[1]
-    icpu  = float(row[8])/cpu  #%CPU -> %total CPU
-    imem  = float(row[9])      #%MEM
-    
-    total_mem += imem
-    total_cpu += icpu
-    
-    if user in ignore: continue
-    
-    users[user] = True
-
-    cols[(host,user,'cpu')] += icpu
-    cols[(host,user,'mem')] += imem
-
-mem_list.append(total_mem)
-cpu_list.append(total_cpu)
+qhost += [tok for tok in out.strip().split('\n')[3:]]
 
 #for each host
 for line in qhost:
@@ -58,18 +35,27 @@ for line in qhost:
     
     hosts.append(host)
 
-    #capture output of top run on this host
-    out = subprocess.check_output("ssh %s 'top -b -n 1'"%host,shell=True)
-    top = [x for x in out.strip().split('\n')[7:]]
+    #read output of top created by the batch_top script
+    #only works if batch_top is running on all the nodes!
+    fname = batch_top_dir + '/' + host + '.top'
+    if not os.path.isfile(fname): continue
+
+    mtime = os.path.getmtime(fname)
+    now = calendar.timegm(time.gmtime())
+    if now - mtime > 100: continue
+    
+    f = open(fname)
+    top = [x.strip() for x in f]
+    f.close()
     
     total_mem = 0.0
     total_cpu = 0.0
     
     for item in top:
         row  = item.split()
-        user = row[1]
-        icpu  = float(row[8])/cpu  #%CPU -> %total CPU
-        imem  = float(row[9])      #%MEM
+        user = row[0]
+        icpu  = float(row[1])/cpu  #%CPU -> %total CPU
+        imem  = float(row[2])      #%MEM
         
         total_mem += imem
         total_cpu += icpu
